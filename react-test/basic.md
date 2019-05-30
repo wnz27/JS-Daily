@@ -82,3 +82,108 @@ React is wonderful ! `
 var name = "React";
 `Hello, ${name} ! `
 ```
+
+## 4、解构赋值
+
+ES 6 允许按照一定的模式从**数组和对象**中提取值，对变量进行赋值，这被称为解构。例如
+
+```
+// 数组解构
+let [a, b, c] = [1, 2, 3];
+a   // 1
+b   // 2
+c   // 3
+
+// 对象解构
+let name = "Lily";
+let age = 4;
+let person = {name, age};
+person      // Object{name: "Lily", age: 4}
+
+// 对象解构的另一种形式
+let person = {name: "Lily", age: 4};
+let {name, age} = person;
+name    // "Lily"
+age     // 4
+```
+
+函数的参数也可以使用解构赋值。
+
+```
+// 数组参数解构
+function sum([x, y]){
+    return x + y;
+}
+sum([1,2]);         // 3
+
+// 对象参数解构
+fucntion sum({x, y}){
+    return x + y;
+}
+sum({x:1, y:2});    // 3
+```
+
+解构同样适用于嵌套结构的数组或对象。例如
+
+```
+// 嵌套结构的对象解构
+let {person:{name, age}, foo} = {person:{name: "Lily", age: 4}, foo: 'foo'};
+name    // "Lily"
+age     // 4
+foo     // "foo"
+```
+
+## 5、rest 参数
+
+ES 6 引入 rest 参数**（形式为...变量名）**用于获取函数的多余参数，以代替 arguments 对象的使用。
+
+rest 参数是一个数组，数组中的元素是多余的参数。注意，**rest 参数之后不能再有其他参数**。例如。
+
+```
+function languages(lang, ...types){
+    console.log(types);
+}
+languages('JavaScript', 'Java', 'Python');  //["Java", "Pyhton"]
+```
+
+## 6、扩展运算符
+
+扩展运算符是三个点**(...)**，它将一个**数组转为用逗号分隔的参数序列**，类似 rest 的逆运算。
+
+- rest：多余参数序列转化为数组
+- 扩展运算符：数组转化为参数序列
+
+例如。
+
+```
+function sum(a, b, c){
+    return a + b + c;
+}
+let numbers = [1, 2, 3]
+sum(...numbers);    // 6
+```
+
+扩展运算符还常用于合并数组以及解构赋值结合使用，例如：
+
+```
+// 合并数组
+let arr1 = ['a'];
+let arr2 = ['b', 'c'];
+let arr3 = ['d', 'e'];
+[...att1, ...arr2, ...arr3];        //['a', 'b', 'c', 'd', 'e'];
+
+// 与解构赋值结合
+let [a, ...rest] = ['a', 'b', 'c'];
+rest        // ['b', 'c']
+```
+
+扩展运算符还可以用于取出参数对象的所有可遍历属性，**复制**到当前对象之中，例如
+
+```
+let bar = {a: 1, b: 2};
+let foo = {...bar};
+foo             // Object{a: 1, b: 2};
+foo === bar     // false
+```
+
+## 7、class
