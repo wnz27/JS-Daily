@@ -259,3 +259,121 @@ const element = (
 ```
 
 ## 2、标签类型
+
+在 JSX 语法中，使用的标签类型有两种：
+
+- DOM 类型的标签（div、span 等）
+  - 标签首字母必须小写
+- React 类型的标签
+  - 组件名称的首字母必须大写
+
+React 正是**通过首字母大小写**判断渲染的是一个 DOM 类型的标签还是一个 React 组件类型的标签。例如
+
+```
+// DOM类型标签
+const element = <h1>hello, world!</h1>
+
+// React组件类型标签
+const element = <HelloWorld />
+
+// 二者可以互相嵌套使用
+const element = (
+    <div>
+        <HelloWorld />
+    </div>
+)
+```
+
+## 3、JavaScript 表达式
+
+JSX 可以使用 JavaScript 表达式，因为 JSX 本质上仍然是 JavaScript。
+
+在 JSX 中使用 JavaScript 表达式需要将表达式用大括号“{}”包起来。
+
+表达式在 JSX 中的使用场景主要有两个：
+
+- 通过表达式给标签属性赋值
+- 通过表达式定义子组件
+
+例如
+
+```
+// 通过表达式给标签属性赋值
+const element = <MyComponent foo={ 1 + 2 } />
+
+// 通过表达式定义子组件（map虽然是函数， 但它的返回值是JavaScript表达式）
+const todos = ['item1', 'item2', 'item3'];
+const element = (
+    <ul>
+      {todos.map(message => <Item key={message} message=
+      {message} />)}
+    </ul>
+);
+```
+
+JSX 中只能使用 JavaScript 表达式，而不能使用多行 JavaScript 语句
+
+不过，JSX 中可以使用三目运算符或逻辑与（&&）运算符代替 if 语句的作用，例如
+
+```
+// 正确
+let complete;
+const element = (
+    <div>
+        {
+          complete ? <CompletedList /> : null
+        }
+    </div>
+)
+
+// 正确
+let complete;
+const element = (
+    <div>
+        {
+          complete && <CompletedList />
+        }
+    </div>
+)
+```
+
+## 4、标签属性
+
+### 当 JSX 标签是 DOM 类型的标签时，对应 DOM 标签支持的属性 JSX 也支持，例如：id、class、style、onclick 等。
+
+但是部分属性的名称会有所改变，主要变化有：class 要写成 className
+
+事件属性名采用驼峰格式，例如 onclick 要写成 onClick。
+
+原因是：
+
+- class 是 JavaScript 的关键字，所以改为 className
+- React 对 DOM 标签支持的时间重新做了封装，封装时采用了更常用的驼峰命名法命名事件
+
+例如
+
+```
+<div id='content' className='foo' onClick={() =>
+{console.log('Hello, React')}} />
+```
+
+### 当 JSX 标签是 React 组件类型时， 可以任意自定义标签的属性名。
+
+例如
+
+```
+<User name='React' age='4' address='America' >
+```
+
+## 5、注释
+
+JSX 中的注释需要用大括号“{}”将/\*\*/包裹起来。例如
+
+```
+const element = (
+    <div>
+        {/* 这是一个注释 */}
+        <span>React</span>
+    </div>
+)
+```
