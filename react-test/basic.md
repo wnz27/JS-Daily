@@ -187,3 +187,45 @@ foo === bar     // false
 ```
 
 ## 7、class
+
+ES 6 引入了 class（类）这个概念，新的 class 写法让对象原型的写法更加清晰，也更像传统面向对象编程语言的写法。例如
+
+```
+// 定义一个类
+class Person{
+    constructor(name, age){
+        this.name = name;
+        this.age = age;
+    }
+
+    getName(){
+        return this.name;
+    }
+}
+
+// 根据类创建对象
+let man = new Man('Jack', 20);
+```
+
+## 8、import、export
+
+ES 6 实现了自己的模块化标准，ES 6 模块功能主要由两个关键字构成：export 和 import。
+
+- export 用于规定模块对外暴露接口
+- import 用于引入其他模块提供的接口
+
+例如
+
+```
+// a.js，导出默认接口和普通接口
+const foo = () => 'foo';
+const bar = () => 'bar';
+export default foo;     // 导出默认接口
+export {bar};           // 导出普通接口
+
+// b.js（与a.js在同一目录下），导入a.js中的接口
+// 注意默认接口和普通接口导入写法的区别
+import foo, {bar} from './a';
+foo();          // "foo"
+bar();          // "bar"
+```
