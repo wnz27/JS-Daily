@@ -377,3 +377,83 @@ const element = (
     </div>
 )
 ```
+
+# JSX 不是必须的
+
+> JSX 语法对使用 React 来说并不是必须的
+
+JSX 语法只是 React.createElement(component, props, ...children)语法糖
+
+所有的 JSX 语法最终都会被转换成对这个方法的调用。例如
+
+```
+// JSX语法
+const element = <div className='foo'>Hello, React</div>
+
+// 转换后
+const element = React.createElement('div', {className:
+'foo'}, 'Hello, React')
+```
+
+**虽然 JSX 只是一个语法糖，但使用它创建界面元素更加清晰简洁，在项目使用中应该首选 JSX 语法**
+
+# 组件
+
+## 组件定义
+
+组件是 React 的核心概念，是 React 应用程序的基石。
+
+组件将应用的 UI 拆分成独立的、可复用的模块，React 应用程序正是由一个一个组件搭建而成的。
+
+定义组件的两种方式：
+
+- 使用 ES 6class（类组件）
+- 使用函数（函数组件）
+
+使用 class 定义组件必须要满足两个条件：
+
+- class 继承自 React.Component。
+- class 内部必须定义 render 方法，render 方法返回代表该组件 UI 的 React 元素
+
+使用 creat-react-app 新建一个简易的 BBS 项目， 在这个项目中定义一个组件 PostList， 用于展示 BBS 的帖子列表。
+
+PostList 的定义如下：
+
+```
+// PostList.js
+import React, { Component } from "react";
+class PostList extends Component {
+  render(){
+    return(
+      <div>
+        帖子列表：
+        <ul>
+          <li>大家一起来讨论React吧</li>
+          <li>前端框架，你最爱哪一个</li>
+          <li>Web App的时代已经到来</li>
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default PostList;
+```
+
+定义组件后，使用 ES 6 export 将 PostList 作为默认模块导出，从而可以在其他 JS 文件中导入 PostList 使用。
+
+现在页面上还无法显示出 PostList 组件，因为我们还没有将 PostList 挂载到页面的 DOM 节点上。
+需要使用 ReactDOM.render()完成这一工作
+
+```
+// index.js
+import React from "react";
+import ReactDOM from "react-dom";
+import PostList from "./PostList";
+
+ReactDOM.render(<PostList />, document.getElementById("root"));
+```
+
+使用 ReactDOM.render() 需要先导入 react-dom 库，这个库会完成**组件所代表的虚拟 DOM 节点到浏览器的 DOM 节点的转换**
+
+## 组件的 props
