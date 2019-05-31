@@ -825,3 +825,59 @@ PropTypes 可以校验的组件属性类型见下表：
 | Symbol                                                                       | PropTypes.symbol   |
 | Element（React 元素）                                                        | PropTypes.element  |
 | Node（可被渲染的节点：数字、字符串、React 元素或由这些类型的数据组成的数组） | PropTypes.node     |
+
+当使用 PropTypes.object 或 proTypes.array 校验属性类型时，我们只知道这个属性是一个对象或者一个数组，至于对象的结构或数组元素的类型是什么样的，无从得知。
+
+这种情况下更好的做法是使用 PropTypes.shape 或 PropTypes.arrayOf 例如。
+
+```
+style: PropTypes.shape({
+  color: PropTypes.string,
+  fontSize: PropTypes.number
+}),
+sequence: PropTypes.arrayOf(PropTypes.number)
+```
+
+表示 style 是一个对象，对象有 color 和 fontSize 两个属性，color 是字符串类型，fontSize 是数字类型；sequence 是一个数组，数组的元素是数字。
+
+如果属性是组件的必须属性，也就是当使用某个组件时，必须传入的属性，就需要在 PropTypes 的类型属性上调用`isRequired`。
+
+在 BBS 项目中，对于 PostItem 组件，post 和 onVote 都是必须属性，PostItem 的 propTypes 定义如下：
+
+```
+import PropTypes from 'prop-types';
+
+PostItem.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    author: PropTypes.string,
+    date: PropTypes.string,
+    vote: PropTypes.number
+  }).isRequired,
+  onVote: PropTypes.func.isRequired
+}
+```
+
+React 还提供了为**组件属性指定默认值的特性**，这个特性通过组件的`defaultProps`实现。
+
+当组件属性未被赋值时，组件会使用 defaultProps 定义的默认属性。例如
+
+```
+function Welcome(props){
+  return <h1 className='foo'>Hello, {props.name}</h1>;
+}
+
+Welcome.defaultProps = {
+    name: 'Stranger'
+};
+```
+
+# 组件样式
+
+为组件添加样式的方法有两种：
+
+- 外部 CSS 样式表
+- 内联样式
+
+## 外部 CSS 样式表
