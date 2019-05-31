@@ -457,3 +457,104 @@ ReactDOM.render(<PostList />, document.getElementById("root"));
 使用 ReactDOM.render() 需要先导入 react-dom 库，这个库会完成**组件所代表的虚拟 DOM 节点到浏览器的 DOM 节点的转换**
 
 ## 组件的 props
+
+在上一节中，PostList 中的每一个帖子都使用一个标签直接包裹
+
+但一个帖子不仅包含帖子的标题，还会包含帖子的创建人、帖子创建时间等信息，这时候标签下的结构就会变得复杂，而且每一个帖子都需要重写一次这个复杂结构。
+
+我们完全可以封装一个 PostItem 组件负责展示每一个帖子的展示，然后再 PostList 中直接使用 PostItem 组件，这样在 PostList 中就不需要为每一个帖子重复写一堆 JSX 标签。
+
+但帖子列表的数据依然存在于 PostList 中，如何将数据传递给每一个 PostItem 组件？
+
+这时候就要用到组件的 props 属性。**组件的 props 用于把父组件中的数据或者方法传递给子组件，供子组件使用。**
+
+props 是一个简单结构的对象，它包含的属性正是由组件作为 JSX 标签时使用的属性组成。
+
+例如下面是一个使用 User 组件作为 JSX 标签的声明：`<User name='React' age='4' address='America' >`
+
+此时 User 组件的 props 结构如下：
+
+```
+props = {
+    name: 'React',
+    age: '4',
+    address: 'America'
+}
+```
+
+现在我们利用 props 定义 PostItem 组件：
+
+```
+// PostItem.js
+import React, { Component } from "react";
+
+class PostItem extends Component {
+  render() {
+    const { title, author, date } = this.props;
+    return (
+      <li>
+        <div>{title}</div>
+        <div>
+          创建人：<span>{author}</span>
+        </div>
+        <div>
+          创建时间：<span>{date}</span>
+        </div>
+      </li>
+    );
+  }
+}
+
+export default PostItem;
+```
+
+然后再 PostList 中使用 PostItem：
+
+```
+// PostList.js
+import PostItem from "./PostItem";
+
+// 真实项目中，帖子列表数据一般从服务器端获取
+// 这里我们通过定义常量data存储列表数据
+const data = [
+  { title: "大家一起来讨论React吧", author: "张三", date: "2017-09-01 10:00" },
+  { title: "前端框架，你最爱哪一个", author: "李四", date: "2018-08-03 09:00" },
+  { title: "Web App的时代已经到来", author: "王五", date: "2019-04-02 14:00" }
+];
+class PostList extends Component {
+  render() {
+    return (
+      <div>
+        帖子列表：
+        <ul>
+          {data.map(item => (
+            <PostItem
+              title={item.title}
+              author={item.author}
+              date={item.date}
+            />
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default PostList;
+```
+
+## 组件的 state
+
+组件的 state 是组件内部的状态，state 的变化最终将反应到组件 UI 的变化上。
+
+我们在组件的构造方法 constructor 中通过`this.state`定义组件的初始状态，并通过调用`this.setState`方法改变组件状态
+
+`this.setState`方法是改变组件状态的唯一方法，调用之后组件 UI 也会随之重新渲染
+
+我们来改造一下之前的项目。我们为每个帖子增加一个“点赞”按钮，每点击一次，该帖子的点赞数增加 1。
+
+点赞数是会发生变化的，它的变化也会影响到组件 UI， 因此我们将点赞数 vote 作为 PostItem 的一个状态定义到它的 state 内。
+
+```
+
+```
