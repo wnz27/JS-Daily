@@ -814,7 +814,7 @@ PostItem.propTypes = {
 
 PropTypes 可以校验的组件属性类型见下表：
 组件类型|PropTypes 对应属性
-:--|:--
+:-|:-
 String|PropTypes.string
 Number|PropTypes.number
 Boolean|PropTypes.bool
