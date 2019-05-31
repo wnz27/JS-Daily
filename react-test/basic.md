@@ -556,5 +556,66 @@ export default PostList;
 点赞数是会发生变化的，它的变化也会影响到组件 UI， 因此我们将点赞数 vote 作为 PostItem 的一个状态定义到它的 state 内。
 
 ```
+// PostItem.js
+import React, { Component } from "react";
 
+class PostItem extends Component {
+  // 构造方法
+  constructor(props) {
+    super(props);
+    this.state = {
+      vote: 0
+    };
+  }
+  // 处理点赞逻辑
+  handleClick() {
+    let vote = this.state.vote;
+    vote++;
+    this.setState({
+      vote: vote
+    });
+  }
+  render() {
+    const { title, author, date } = this.props;
+    return (
+      <li>
+        <div>{title}</div>
+        <div>
+          创建人：<span>{author}</span>
+        </div>
+        <div>
+          创建时间：<span>{date}</span>
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              this.handleClick();
+            }}
+          >
+            点赞
+          </button>
+          &nbsp;
+          <span>{this.state.vote}</span>
+        </div>
+      </li>
+    );
+  }
+}
+export default PostItem;
+```
+
+这里有三个需要注意的地方：
+
+1. 在组件的构造方法 constructor 内，首先要调用`super(props)`， 这一步实际上是调用了`React.Component`这个 class 的 constructor 方法，用来完成组件的初始化工作。
+2. 在 constructor 中，通过`this.state`定义了组件的状态
+3. 在 render 方法中，我们为标签定义了处理点击事件的响应函数，在响应函数内部会调用`this.setState`更新组件的点赞数
+
+## 小结
+
+前两节讲的 props 和 state 都会直接影响组件的 UI。
+
+事实上可以将 React 组件看作是一个函数，函数的输入是`props`和`state`，函数的输出是组件的 UI。
+
+```
+UI = Component(props, state)
 ```
