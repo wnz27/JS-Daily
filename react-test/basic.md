@@ -619,3 +619,175 @@ export default PostItem;
 ```
 UI = Component(props, state)
 ```
+
+React 组件正是由 props 和 state 两种类型的数据驱动渲染出组件 UI。
+
+- props 是组件对外的接口，组件通过 props 接受**外部传入的数据（包括方法）**。
+- state 是组件对内的接口，组件内部状态的变化通过 state 来反映。
+
+注意：
+
+- props 是**只读的**，不能在组件内部修改 props
+- state 是**可变的**，组件状态的变化通过修改 state 来实现。
+
+## 有状态组件和无状态组件
+
+定义无状态组件除了使用 ES 6class 的方式外，还可以使用函数定义。
+
+一个函数组件接受 props 作为参数，返回代表这个组件 UI 的 React 元素结构。例如，下面一个简单地函数组件
+
+```
+function Welcome(props){
+    return <h1>Hello, {props.name}</h1>;
+}
+```
+
+可以看出函数组件的写法比类组件的写法要简洁的多，在使用无状态组件的时候，尽量将其定义成函数组件
+
+在开发 React 应用时，要先思考哪些组件应设计成有状态组件，哪些设计成无状态组件。
+
+应尽可能多的使用无状态组件，无状态组件不用关心状态的变化，只**聚焦于 UI 的展示，因为更容易被复用。**
+
+React 应用组件设计的一般思路是：通过定义少数的有状态组件管理整个应用的状态变化，
+
+并且将状态通过 props 传递给其余的无状态组件，由无状态组件完成页面绝大部分的 UI 的渲染工作。
+
+总之
+
+- 有状态组件主要关注处理状态变化的业务逻辑
+- 无状态组件主要关注组件 UI 的渲染
+
+#### 项目分析
+
+来复盘下之前 BBS 项目的组件设计。当前设计不太合适，主要体现在：
+
+1. 帖子列表通过一个常量 data 保存在组件之外，但帖子列表的数据是会改变的，新帖子的赠加或原有帖子的删除都会导致帖子列表数据的变化。
+2. 每一个 PostItem 都维持一个 vote 状态，但除了 vote 以外，帖子其他的信息（如标题、创建人等）都保存在 PostList 中，这显然也不合理。
+
+我们针对这两个组件进行重新设计
+
+- 将 PostList 设计为有状态组件，负责帖子列表数据的获取，以及点赞行为的处理。
+- 将 PostItem 设计为无状态组件，只负责每一个帖子的展示。
+
+此时 PostList 和 PostItem 重构如下：
+
+```
+//PostList.js
+import React, { Component } from "react";
+import PostItem from "./PostItem";
+
+class PostList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: []
+    };
+    this.timer = null; // 定时器
+    this.handleVote = this.handleVote.bind(this); // ES 6的class中，必须手动绑定方法this的指向
+  }
+  componentDidMount() {
+    // 用setTimeout 模拟异步从服务器端获取数据
+    this.timer = setTimeout(() => {
+      this.setState({
+        posts: [
+          {
+            id: 1,
+            title: "大家一起来讨论React吧",
+            author: "张三",
+            date: "2017-09-01 10:00",
+            vote: 0
+          },
+          {
+            id: 2,
+            title: "前端框架，你最爱哪一个",
+            author: "李四",
+            date: "2018-08-03 09:00",
+            vote: 0
+          },
+          {
+            id: 3,
+            title: "Web App的时代已经到来",
+            author: "王五",
+            date: "2019-04-02 14:00",
+            vote: 0
+          }
+        ]
+      });
+    }, 1000);
+  }
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer); // 清除定时器
+    }
+  }
+  handleVote(id) {
+    // 根据帖子id进行过滤，找到待修改vote属性的帖子，返回新的posts对象
+    const posts = this.state.posts.map(item => {
+      const newItem = item.id === id ? { ...item, vote: ++item.vote } : item;
+      return newItem;
+    });
+    // 使用新的posts对象设置
+    this.setState({
+      posts: posts
+    });
+  }
+  render() {
+    return (
+      <div>
+        帖子列表：
+        <ul>
+          {this.state.posts.map(item => (
+            <PostItem post={item} onVote={this.handleVote} />
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default PostList;
+
+// PostItem.js
+import React from "react";
+
+function PostItem(props) {
+  const handleClick = () => {
+    props.onVote(props.post.id);
+  };
+  const { post } = props;
+  return (
+    <li>
+      <div>{post.title}</div>
+      <div>
+        创建人：<span>{post.author}</span>
+      </div>
+      <div>
+        创建时间：<span>{post.date}</span>
+      </div>
+      <div>
+        <button onClick={handleClick}>点赞</button>
+        &nbsp;
+        <span>{post.vote}</span>
+      </div>
+    </li>
+  );
+}
+
+export default PostItem;
+```
+
+主要的修改有：
+
+1. 帖子列表数据定义为 PostList 组建的一个状态。
+2. 在 componentDidMount 生命周期方法中，通过 setTimeout 设置一个延时，模拟从服务器端获取数据，然后调用 setState 更新组件状态
+3. 将帖子的多个属性（ID、标题、创建人、创建时间、点赞数）合并成一个 post 对象，通过 props 传递给 PostItem。
+4. 在 PostList 内定义 handleVote 方法，处理点赞逻辑，并将该方法通过 props 传递给 PostItem。
+5. PostItem 定义为一个函数组件，根据 PostList 传递的 post 属性渲染 UI。当发生点赞行为时，调用 props.onVote 方法将点赞逻辑交给 PostList 中的 handleVote 方法处理。
+
+这样修改的好处与解释：
+
+PostItem 只关注如何展示帖子，至于帖子的数据从何而来以及点赞逻辑如何处理，统统交给 PostList 处理。
+
+组件之间解耦更加彻底，PostItem 组件更容易被复用
+
+## 属性校验和默认属性
