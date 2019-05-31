@@ -813,14 +813,14 @@ PostItem.propTypes = {
 ```
 
 PropTypes 可以校验的组件属性类型见下表：
-组件类型|PropTypes 对应属性
-:-|:-
-String|PropTypes.string|
-Number|PropTypes.number|
-Boolean|PropTypes.bool|
-Function|PropTypes.func|
-Object|PropTypes.object|
-Array|PropTypes.array|
-Symbol|PropTypes.symbol|
-Element（React 元素）|PropTypes.element|
-Node（可被渲染的节点：数字、字符串、React 元素或由这些类型的数据组成的数组）|PropTypes.node|
+|组件类型|PropTypes 对应属性|
+|:-|:-|
+|String|PropTypes.string|
+|Number|PropTypes.number|
+|Boolean|PropTypes.bool|
+|Function|PropTypes.func|
+|Object|PropTypes.object|
+|Array|PropTypes.array|
+|Symbol|PropTypes.symbol|
+|Element（React 元素）|PropTypes.element|
+|Node（可被渲染的节点：数字、字符串、React 元素或由这些类型的数据组成的数组）|PropTypes.node|
