@@ -791,3 +791,36 @@ PostItem 只关注如何展示帖子，至于帖子的数据从何而来以及�
 组件之间解耦更加彻底，PostItem 组件更容易被复用
 
 ## 属性校验和默认属性
+
+props 是一个组件对外暴露的接口，但到目前为止
+
+组件内部没有明显地声明它暴露出哪些接口，以及这些接口的类型是什么，这不利于组件的复用
+
+但 React 提供了 PropTypes 这个对象，用于校验组件属性的类型。
+
+PropTypes 包含组件属性所有可能的类型，我们通过定义一个对象（对象的 key 是组件的属性名，value 是对应属性的类型）实现组件属性类型的校验。例如
+
+```
+import PropTypes from 'prop-types';
+
+class PostItem extends React.Component{
+    // .......
+}
+PostItem.propTypes = {
+    post: PropTypes.object,
+    onVote: PropTypes.func
+};
+```
+
+PropTypes 可以校验的组件属性类型见下表：
+组件类型|PropTypes 对应属性
+:--|:--
+String|PropTypes.string
+Number|PropTypes.number
+Boolean|PropTypes.bool
+Function|PropTypes.func
+Object|PropTypes.object
+Array|PropTypes.array
+Symbol|PropTypes.symbol
+Element（React 元素）|PropTypes.element
+Node（可被渲染的节点：数字、字符串、React 元素或由这些类型的数据组成的数组）|PropTypes.node
