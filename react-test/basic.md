@@ -1094,4 +1094,97 @@ export default PostItem;
 
 React 元素是一个普通的 JavaScript 对象，这个对象通过 DOM 节点或 React 组件描述界面是什么样子的。
 
-JSX 语法就是用来创建 React 元素的，还记得 JSX 语法实际上是调用了[`React.createElement`方法](#JSX不是必须的)。
+JSX 语法就是用来创建 React 元素的，还记得 JSX 语法实际上是调用了[`React.createElement`方法](#JSX不是必须的)。例如
+
+```
+// Button是一个自定义的React组件
+
+<div className='foo'>
+  <Button color='blue'>
+    OK
+  </Button>
+</div>
+```
+
+上面的 JSX 代码会创建下面的 React 元素：
+
+```
+{
+  type: 'div',
+  props: {
+    className: 'foo',
+    children:{
+      type: 'Button',
+      props:{
+        color: 'blue',
+        children: 'OK'
+      }
+    }
+  }
+}
+```
+
+React 组件是一个**class**或者**函数**，它接收一些属性作为输入，返回一个 React 元素。React 组件是由若干 React 元素组建而成的。
+
+用下面例子解释 React 组件与 React 元素之间的关系：
+
+```
+// Button是一个React组件
+class Button extends React.Component {
+  render(){
+    return (<button>OK</button>);
+  }
+}
+
+// 在JSX中使用组件Button，button是一个代表Button的React元素
+const button = <Button />;
+
+// 在组件Page中使用React元素button
+class Page extends React.Component {
+  reder(){
+    return(
+      <div>
+        {button}
+      </div>
+    );
+  }
+}
+
+// 上面的Page写法等于下面这种写法：
+class Page extends React.Component {
+  reder(){
+    return(
+      <div>
+        <Button />
+      </div>
+    );
+  }
+}
+```
+
+# 组件的生命周期
+
+组件从被创建到被销毁的过程称为组建的生命周期。
+
+React 为组件在不同的生命周期提供不同的生命周期方法，让开发者可以在组件的生命周期过程中更好地控制组件的行为。
+
+组件的生命周期可以分为三个阶段：
+
+- 挂载阶段
+
+  1. `constructor`
+  2. `componentWillMount`
+  3. `render`
+  4. `componentDidMount`
+
+- 更新阶段
+- 卸载阶段
+
+## 挂载阶段
+
+这个阶段组件被创建，执行初始化，并被挂在到 DOM 中，完成组件的第一次渲染。**依次调用**的声明周期方法有：
+
+1. `constructor`
+2. `componentWillMount`
+3. `render`
+4. `componentDidMount`
