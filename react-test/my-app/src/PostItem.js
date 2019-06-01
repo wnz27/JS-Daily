@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import "./PostItem.css";
+import like from "./images/like-default.png"; //图标作为模块被导入
 
 function PostItem(props) {
   const handleClick = () => {
@@ -7,17 +9,18 @@ function PostItem(props) {
   };
   const { post } = props;
   return (
-    <li>
-      <div>{post.title}</div>
+    <li className="item">
+      <div className="title">{post.title}</div>
       <div>
         创建人：<span>{post.author}</span>
       </div>
       <div>
         创建时间：<span>{post.date}</span>
       </div>
-      <div>
-        <button onClick={handleClick}>点赞</button>
-        &nbsp;
+      <div className="like">
+        <span>
+          <img src={like} onClick={handleClick} alt="vote" />
+        </span>
         <span>{post.vote}</span>
       </div>
     </li>

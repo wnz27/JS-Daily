@@ -935,3 +935,155 @@ function Welcome(props){
 CSS Modules 会对样式文件中的 class 名称进行重新命名从而保证其唯一性，但 CSS Modules 并不是必须的，**create-react-app 创建的项目，默认配置不支持这一特性。**
 
 CSS Modules 的使用不复杂，想了解可自行了解： [CSS Modules](http://github.com/css-modules/css-modules)。
+
+## 内联样式
+
+内联样式实际上是一种 CSS in JS 的写法：将 CSS 样式写到 JS 文件中，用 JS 对象表示 CSS 样式
+
+**然后通过 DOM 类型节点的 style 属性引用相应样式对象。**依然使用 Welcome 组件举例：
+
+```
+function Welcome(props){
+  return(
+    <h1 style={{
+      width: "100%",
+      height: "50px",
+      backgroudColor: "blue",
+      fontSize: "20px"
+    }}>
+      Hello, {props.name}
+    </h1>
+  );
+}
+```
+
+注意：
+
+> style 使用了两个大括号，这可能会让你感到迷惑。其实，第一个大括号表示 style 的值是一个 JavaScript 表达式，第二个大括号表示这个 JavaScript 表达式是一个对象。
+
+换一种写法：
+
+```
+function Welcome(props){
+    const style = {
+      width: "100%",
+      height: "50px",
+      backgroudColor: "blue",
+      fontSize: "20px"
+    }
+  return <h1 style={style}>Hello, {props.name}</h1>
+}
+```
+
+#### 注意
+
+格式的属性名必须使用驼峰格式的命名。所以，在 Welcome 组件中
+
+`background-color`写成`backgroundColor`，`font-size`写成`fontSize`。
+
+#### 回归 BBS 项目
+
+创建 style.css、PostList.css 和 PostItem.css 三个样式文件，这样引入：
+
+| CSS 文件     | CSS 文件引入位置 | CSS 导入语句(注意路径正误即可) | CSS 文件位置 |
+| :----------- | :--------------- | :----------------------------- | :----------- |
+| style.css    |                  | 无需导入                       | public       |
+| PostList.css | PostList.js      | import "./PostList.css"        | src          |
+| PostItem.css | PostItem.js      | import "./PostItem.css"        | src          |
+
+> create-react-app 将 public 下的文件配置成可以在 HTML 页面中直接引用，因此我们将 style.css 放置在 public 文件夹下。
+> 而 PostList.css 和 PostItem.css 是以模块的方式在 JS 文件中被导入的，因此放在 src 文件夹下。
+
+```
+// style.css
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+ul {
+  list-style: none;
+}
+
+h2 {
+  text-align: center;
+}
+
+// PostList.css
+.container {
+  width: 900px;
+  margin: 20px auto;
+}
+
+// PostItem.css
+.item {
+  border-top: 1px solid grey;
+  padding: 15px;
+  font-size: 14px;
+  color: grey;
+  line-height: 21px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 14px;
+  color: #009a61;
+}
+
+.like {
+  width: 100%;
+  height: 20px;
+}
+
+.like img {
+  width: 20px;
+  height: 20px;
+}
+
+.like span {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  display: table-cell;
+}
+```
+
+我们还可以将 PostItem 中的点赞按钮换成图标，图标也可以作为一个模块被 JS 文件导入，如 PostItem.js 所示：
+
+```
+// PostItem.js
+
+import React from "react";
+import "./PostItem.css";
+import like from "./images/like-default.png";  //图标作为模块被导入
+
+function PostItem(props) {
+  const handleClick = () => {
+    props.onVote(props.post.id);
+  };
+  const { post } = props;
+  return (
+    <li className="item">
+      <div className="title">{post.title}</div>
+      <div>
+        创建人：<span>{post.author}</span>
+      </div>
+      <div>
+        创建时间：<span>{post.date}</span>
+      </div>
+      <div className="like">
+        <span>
+          <img src={like} onClick={handleClick} alt="vote" />
+        </span>
+        <span>{post.vote}</span>
+      </div>
+    </li>
+  );
+}
+
+export default PostItem;
+```
+
+## 组件和元素
