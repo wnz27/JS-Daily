@@ -382,6 +382,8 @@ const element = (
 )
 ```
 
+<a id="JSX不是必须的"></a>
+
 # JSX 不是必须的
 
 > JSX 语法对使用 React 来说并不是必须的
@@ -1092,4 +1094,4 @@ export default PostItem;
 
 React 元素是一个普通的 JavaScript 对象，这个对象通过 DOM 节点或 React 组件描述界面是什么样子的。
 
-JSX 语法就是用来创建 React 元素的，还记得 JSX 语法实际上是调用了[`React.createElement`方法](# JSX 不是必须的)。
+JSX 语法就是用来创建 React 元素的，还记得 JSX 语法实际上是调用了[`React.createElement`方法](#JSX不是必须的)。
