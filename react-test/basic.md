@@ -1,3 +1,7 @@
+#开头说明
+
+> 此篇笔记来源于拜读这本书：《React 进阶之路》，作者：徐超，清华大学出版社。
+
 # ES6 语法简介
 
 ## 1、let、const
@@ -881,3 +885,53 @@ Welcome.defaultProps = {
 - 内联样式
 
 ## 外部 CSS 样式表
+
+这种方式和平时我们开发 web 应用时使用外部 CSS 文件相同，CSS 样式表中根据 HTML 标签类型、ID、class 等选择器定义元素的样式。
+
+唯一的区别是，React 元素要使用 className 来代替 class 作为选择器。例如，为 Welcome 组件的根节点设置一个 className='foo'的属性：
+
+```
+function Welcome(props){
+    return <h1 className='foo'>Hello, {props.name}</h1>
+}
+```
+
+然后再 CSS 样式表中通过 class 选择器定义 Welcome 组件的样式：
+
+```
+// style.css
+.foo {
+    width:100%;
+    height:50px;
+    background-color:blue;
+    font-size:20px;
+}
+```
+
+样式标的引入方式有两种，一种是在使用组件的 HTML 页面中通过标签引入
+
+```
+<link rel="stylesheet" type="text/css" href="style.css">
+```
+
+另一种是把样式表文件当做一个模块，在使用该样式表的组件中，像导入其他组件一样导入样式表文件：
+
+```
+import './style.css';       // 要保证相对路径设置正确
+
+function Welcome(props){
+    return return <h1 className='foo'>Hello, {props.name}</h1>
+}
+```
+
+- 第一种引入样式表的方式常用于该样式表文件作用于整个应用的所有组件（一般是基础样式表）
+- 第二种引入样式表的方式常用于该样式表作用于某个组件（相当于组件的私有样式）
+- 所以，全局的基础样式表也可以使用第二种方式引入，一般在应用入口 JS 文件中引入。
+
+#### 补充说明
+
+使用 CSS 样式表经常遇到的一个问题是 class 名称冲突。业内解决这个问题的一个常用方案是使用 CSS Modules
+
+CSS Modules 会对样式文件中的 class 名称进行重新命名从而保证其唯一性，但 CSS Modules 并不是必须的，**create-react-app 创建的项目，默认配置不支持这一特性。**
+
+CSS Modules 的使用不复杂，想了解可自行了解： [CSS Modules](http://github.com/css-modules/css-modules)。
