@@ -1189,7 +1189,7 @@ React 为组件在不同的生命周期提供不同的生命周期方法，让�
 3. `render`
 4. `componentDidMount`
 
-## constructor
+### 1、constructor
 
 这是 ES 6 class 的构造方法，组件被创建时，会首先调用组件的构造方法。
 
@@ -1198,3 +1198,53 @@ React 为组件在不同的生命周期提供不同的生命周期方法，让�
 **你必须在这个方法中首先调用`super(props)`才能保证 props 被传入组件中。**
 
 constructor 通常用于**初始化组件的 state**以及**绑定事件处理方法**等。
+
+### 2、componentWillMount
+
+这个方法在组件被挂载到 DOM 前调用，且只会被调用一次。
+
+这个方法在实际项目中很少被用到，因为可以在该方法中执行的工作都可以提前到 constructor 中。
+
+**在这个方法中调用`this.setState`不会引起组件的重新渲染**
+
+### 3、render
+
+这是定义组件时唯一必要的方法（组件的其他生命周期方法都可以省略）。
+
+这个方法中，根据组件的 props 和 state 返回一个 React 元素，用于描述组件的 UI，通常 React 元素使用 JSX 语法定义。
+
+需要注意的是，render 并不负责组件的实际渲染工作，**render 只是返回一个 UI 的描述**，真正的渲染出页面 DOM 的工作由 React 自身负责。
+
+render 是一个纯函数，在这个方法中不能执行任何有副作用的操作，所以**不能在 render 函数中调用`this.setState`**，这会改变组件的状态。
+
+#### 个人理解
+
+render 是返回一个 UI 描述，所谓 UI 描述不就是返回页面的元素，而你`this.setState`方法不就是重新设置页面元素吗，所以肯定不能在你返回页面元素的同时改变页面元素，这不合理。
+
+### 4、componentDidMount
+
+在组件被挂载到 DOM 后调用，且只会被调用一次。这时候已经可以获取到 DOM 结构，因此依赖 DOM 节点的操作可以放到这个方法中。
+
+**这个方法通常会用于向服务器端请求数据。**
+
+**在这个方法中调用 this.setState 会引起组件的重新渲染。**
+
+## 更新阶段
+
+组件被挂载到 DOM 后，组件的 props 或 state 可以引起组件更新。props 引起的组件更新，本质上是由渲染该组件的父组件引起的。
+
+也就是当父组件的 render 方法被调用时，组件会发生更新过程，这个时候组件 props 的值可能变也可能不变，因为父组件可以使用相同的对象或值为组件的 props 赋值。
+
+但无论 props 是否改变，父组件的 render 每调用一次，都会导致组件更新。
+
+State 引起组件更新，是通过 this.setState 修改组件 state 来触发的。
+
+组件更新阶段，**依次调用**的生命周期方法有：
+
+1. componentWillReceiveProps
+2. shouldComponentUpdate
+3. componentWillUpdate
+4. render
+5. componentDidUpdate
+
+## componentWillReceiveProps(nextProps)
