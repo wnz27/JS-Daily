@@ -1247,4 +1247,140 @@ State 引起组件更新，是通过 this.setState 修改组件 state 来触发�
 4. render
 5. componentDidUpdate
 
-## componentWillReceiveProps(nextProps)
+## 1、componentWillReceiveProps(nextProps)
+
+这个方法只在 props 引起的组件更新过程中，才会被调用。state 引起的组件更新并不会触发该方法的执行。
+
+方法的参数 nextProps 是父组件传递给当前组件的新 props。
+
+因为 render 不保证 props 发生变化，也就是说 nextProps 的值可能和子组件当前 props 的值相等
+
+因此往往需要比较 nextProps 的和 this.props 来决定是否执行 props 发生变化后的逻辑
+
+比如根据新的 props 调用 this.setState 触发组件的重新渲染。
+
+### 注意
+
+1. componentWillReceiveProps 中调用 setState，只有在组件 render 以及其之后的方法中，this.state 指向的才是更新后的 state，render 之前的两个方法，this.state 依然指向的是更新前的 state。
+2. 通过调用 setState 更新组件状态并不会触发 componentWillReceiveProps 的调用，否则可能会进入死循环：componentWillReceiveProps --> this.setState --> componentWillReceiveProps，因为我们一般会在 componentWillReceiveProps 中去调用 setState
+
+## 2、shouldComponentUpdate(nextProps, nextState)
+
+该方法决定组件是否继续执行更新过程。当方法返回 true 时（该方法默认返回 true）组件会继续更新过程。
+
+当返回 false 时，组件更新过程停止，后续的三个方法不会再被调用。一般通过比较 nextProps 和 nextState 和组件当前的 props 和 state 决定这个方法的返回结果。
+
+这个方法是用来减少组件不必要的渲染，从而优化组件的性能。
+
+## 3、componentWillUpdate(nextProps, nextState)
+
+这个方法在 render 调用前执行，可以作为组件更新发生前执行某些工作的地方，一般很少用。
+
+### 注意
+
+在 shouldComponentUpdate 和 componentWillUpdate 中都不能调用 setState，否则会引起循环调用问题，render 永远不会被调用，组件也无法正常渲染。
+
+## 5、componentDidUpdate(prevProps, prevState)
+
+组件更新后被调用，可以作为**操作更新后的 DOM 的地方**。两个参数是代表更新前 props 和 state
+
+# 卸载阶段
+
+组件从 DOM 中被卸载的过程，这个过程中只有一个生命周期方法：
+
+- componentWillUnmount
+  这个方法在组件被卸载前调用，可以在**执行一些清理工作**：
+
+比如清除组件使用的定时器，清除 componentDidMount 中手动创建的 DOM 元素等，以避免引起内存泄漏。
+
+### 注意
+
+**只有类组件才有生命周期，函数组件是没有生命周期方法的**
+
+# 列表和 Keys
+
+在组件渲染列表数据是非常常见的场景，例如 PostList 组件就需要根据列表数据 posts 进行渲染：
+
+```
+render() {
+    return (
+      <div className="container">
+        <h2>帖子列表：</h2>
+        <ul>
+          {this.state.posts.map(item => (
+            <PostItem post={item} onVote={this.handleVote} />
+          ))}
+        </ul>
+      </div>
+    );
+}
+```
+
+然后我们用浏览器打开控制台，会有警告：**应该为列表中每个元素添加一个名为 key 的属性。**
+
+### 这个属性有什么作用呢？
+
+React 使用 key 属性来标记列表中的每个元素，当列表数据发生改变时，React 就可以通过 key 直到哪些元素发生了改变，从而只重新渲染发生变化的元素，提高渲染效率。
+
+一般只是用列表数据的 ID 作为 key 值即可，例如可以使用帖子的 ID 作为每一个 PostItem 的 key：
+
+```
+render() {
+    return (
+      <div className="container">
+        <h2>帖子列表：</h2>
+        <ul>
+          {this.state.posts.map(item =>
+            // 将id值付给key属性，作为唯一标识
+            <PostItem key={item.id} post={item} onVote={this.handleVote} />
+          )}
+        </ul>
+      </div>
+    );
+}
+```
+
+再次运行，警告就不存在了。
+
+虽然列表元素的 key 不能重复，但这个唯一性仅限于在当前列表中，而不是全局唯一。可以在一个组件中两次使用 post.id 作为列表数据的 key。在两个不同的列表里。
+
+# 事件处理
+
+在 React 元素中绑定时间有两点需要注意
+
+1. 在 React 中，事件的命名采用驼峰命名方式，而不是 DOM 元素中的小写字母命名方式。如，onclick 要写成 onClick， onchange 要写成 onChange
+2. 处理事件（图片引用也是对象）的响应函数**要以对象的形式赋值给事件属性**，而不是 DOM 中的字符串形式。例如，在 DOM 中绑定一个点击事件这样写：
+
+```
+<button onclick="clickButton()">
+  Click
+</button>
+```
+
+而在 React 元素中绑定一个点击事件变成这种形式：
+
+```
+<button onClick={clickButton}>
+  Click
+</button>
+```
+
+React 中的时间是合成时间，并不是原生的 DOM 时间。React 根据 W3C 规范定义了一套兼容各个浏览器的事件对象。
+
+在 DOM 事件中，可以通过处理函数返回 false 来阻止事件的默认行为。但在 React 事件中，必须显式的调用事件对象的 preventDefault 方法来阻止事件的默认行为。
+
+除了这一点外，DOM 事件和 React 事件在使用上并无差别。
+
+如果在某些场景下必须使用 DOM 提供的原生事件，可以通过 React 事件对象的 nativeEvent 属性获取。
+
+### 注意
+
+在 React 组件中处理事件最容易出错的地方是在事件处理函数中**this 的指向问题**因为 ES6 class 并**不会为方法自动绑定 this 到当前对象**。
+
+React 事件处理函数的写法主要有**三种方式，不同的写法解决 this 指向问题的方式也不同**
+
+## 使用箭头函数
+
+## 使用组件方法
+
+## 属性初始化语法（property initializer syntax）

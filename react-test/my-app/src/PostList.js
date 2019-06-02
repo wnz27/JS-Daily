@@ -63,7 +63,8 @@ class PostList extends Component {
         <h2>帖子列表：</h2>
         <ul>
           {this.state.posts.map(item => (
-            <PostItem post={item} onVote={this.handleVote} />
+            // 将id值付给key属性，作为唯一标识
+            <PostItem key={item.id} post={item} onVote={this.handleVote} />
           ))}
         </ul>
       </div>
