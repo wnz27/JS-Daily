@@ -1188,3 +1188,13 @@ React 为组件在不同的生命周期提供不同的生命周期方法，让�
 2. `componentWillMount`
 3. `render`
 4. `componentDidMount`
+
+## constructor
+
+这是 ES 6 class 的构造方法，组件被创建时，会首先调用组件的构造方法。
+
+这个构造方法接收一个 props 参数，props 是从父组件中传入的属性对象，如果父组件中没有传入属性而组件自身定义了默认属性，那么这个 props 指向的就是组件的默认属性。
+
+**你必须在这个方法中首先调用`super(props)`才能保证 props 被传入组件中。**
+
+constructor 通常用于**初始化组件的 state**以及**绑定事件处理方法**等。
