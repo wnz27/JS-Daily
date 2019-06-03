@@ -1381,6 +1381,135 @@ React 事件处理函数的写法主要有**三种方式，不同的写法解决
 
 ## 使用箭头函数
 
+直接在 React 元素中采用箭头函数定义事件的处理函数，例如
+
+```
+class MyComponent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {number: 0};
+  }
+}
+  render(){
+    return(
+      <button onClick={(event) =>
+      {console.log(this.state.number);}}>
+      </button>
+    );
+  }
+```
+
+因为箭头函数中的 this 指向的是函数定义时的对象，所以可以保证 this 总是指向当前组件的实例对象。
+
+当事件处理逻辑比较复杂时，如果把所有的逻辑直接写在 onClick 的大括号内，就会导致 render 函数变得臃肿，不容易直观地看出组件的 UI 结构，代码的可读性也不好。
+
+这时，可以把逻辑封装成组件的一个方法，然后再箭头函数中调用这个方法。
+
+```
+class MyComponent extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {number: 0};
+  }
+  // 每点击一次Button，state中的number增加1
+  handleClick(event) {
+    const nubmer = ++this.state.number;
+    this.setState({
+      number: number
+    });
+  }
+  render(){
+    return (
+      <div>
+        <div>{this.state.number}</div>
+        <button onClick={(event) =>
+        {this.handleClick(event);}}>
+          Click
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+直接在 render 方法中为元素事件定义事件处理函数，最大的问题是每次 render 调用时，都会创建一个新的事件处理函数，带来额外的性能开销，组件所处层级越低，这种开销就越大，因为任何一个上层足迹建的变化都可能会触发这个组件的 render 方法。当然在大多数情况下，这点性能损失是可以不必在意的。
+
 ## 使用组件方法
+
+直接将组件的方法赋值给元素的时间属性，同时在类的构造函数中，将这个方法的 this 绑定到当前对象。例如
+
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {number: 0};
+    this.handleClick = this.handleClick.bind(this);
+  }
+  // 每点击一次Button，state中的number增加1
+  handleClick(event) {
+    const nubmer = ++this.state.number;
+    this.setState({
+      number: number
+    });
+  render(){
+    return (
+      <div>
+        <div>{this.state.number}</div>
+          <button onClick={this.handleClick}>
+          Click
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+这种方式的好处是每次 render 不会重新创建一个回调函数，没有额外的性能损失。但在构造函数中，为事件处理函数绑定 this，尤其是存在多个时间处理函数需要绑定时，这种模板式的代码还是会显得繁琐。
+
+有些开发者还习惯在为元素的事件属性赋值时，同时为事件处理函数绑定 this。例如
+
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {number:0}
+  }
+  // 每点击一次Button，state中的number增加1
+  handleClick(event) {
+    const nubmer = ++this.state.number;
+    this.setState({
+      number: number
+    });
+  render(){
+    return (
+      <div>
+        <div>{this.state.number}</div>
+          // 事件属性赋值和this绑定同时进行
+          <button onClick={this.handleClick.bind(this)}>
+          Click
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+使用 bind 会创建一个新的函数，因此这种写法依然存在每次 render 都会创建一个新函数的问题。
+
+但在需要**为处理函数传递额外参数**时，这个方法就有了用武之地。例如，下面列子需要为 handleClick 传入参数 item：
+
+```
+class MyComponent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      list:[1, 2, 3, 4],
+      current: 1
+    };
+  }
+  // 点击每一项时，将点击项设置为当前选中项，因此需要把点击项作为参数传递
+
+}
+```
 
 ## 属性初始化语法（property initializer syntax）
