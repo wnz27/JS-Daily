@@ -1508,8 +1508,143 @@ class MyComponent extends React.Component{
     };
   }
   // 点击每一项时，将点击项设置为当前选中项，因此需要把点击项作为参数传递
-
+  handleClick(item,event) {
+    this.setState({
+      current: item
+    });
+  }
+  render(){
+    return (
+      <ul>
+        {this.state.list.map(
+          (item) => (
+            // bind除了绑定this，还绑定item作为参数，供handleClick使用
+            <li className={this.state.current === item ? 'current':''} onClick={this.handleClick.bind(this,item)}>
+              {item}
+            </li>
+          )
+        )}
+      </ul>
+    );
+  }
 }
 ```
 
 ## 属性初始化语法（property initializer syntax）
+
+使用 ES 7 的 property initializers 会自动为 class 中定义的方法绑定 this。例如：
+
+```
+class MyComponent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {number: 0};
+  }
+  // ES7的初始化语法，实际上也是使用了箭头函数
+  handleClick = (event) => {
+    const number = ++this.state.number;
+    this.setState({
+      number:number
+    });
+  }
+  render(){
+    return (
+      <div>
+        <div>{this.state.number}</div>
+          <button onClick={this.handleClick}>
+          Click
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+这种方式既不需要在构造函数中手动绑定 this，也不需要担心组件重复渲染导致的函数重复创建问题。
+
+但是 property initializers 这个特性还处于试验阶段，默认是不支持的。不过使用官方脚手架 Create React App 创建的项目默认是支持这个特性的。
+
+你也可以自行在项目中引入 babel 的 transform-class-properties 插件来获取这个特性支持。
+
+# 表单
+
+和其他元素相比，表单元素在 React 中的工作方式存在一些不同。
+
+像 div、p、span 等非表单元素只需要根据组件的属性或者状态进行渲染即可，但表单元素自身维护一些状态，而这些状态默认情况下是不受 React 控制的。
+
+例如，input 元素会根据用户的输入自动改变显示内容，而不是从组件的状态中获取显示的内容。我们称这类状态不受 React 控制的表单元素为**非受控组件**
+
+在 React 中，状态的修改必须通过组件的 state，非受控组件的行为显然有悖于这一原则。为了让**表单元素状态的变更也能通过组件的 state 管理**，React 采用**受控组件的技术**达到这一目的。
+
+## 受控组件
+
+> 如果一个表单元素的值是由 React 来管理的，那么它就是一个受控组件。
+
+React 组件渲染表单元素，并在用户和表单元素发生交互时控制表单元素的行为，从而保证组件的 state 成为界面上所有元素状态的唯一来源。
+
+对于不用的表单元素，React 的控制方式略有不同。下面我们就看一下三类常用表单元素的控制方式。
+
+### 1、文本框
+
+文本框包含类型为 text 的 input 元素和 textarea 元素。它们受控的主要原理是
+
+- 通过表单元素的 value 属性设置表单元素的值
+- 通过表单元素的 onChange 事件监听值的变化，并将变化同步到 React 组件的 state 中。
+
+例如
+
+```
+class LoginForm extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {name: '', password: ''};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  // 监听用户名和密码两个imput值的变化
+  hadleChange(event){
+    const target = event.target;
+    this.setState({[target.name]: target.value});
+  }
+  // 表单提交的响应函数
+  handleSubmit(event){
+    console.log('login successfully');
+    event.preventDefault();
+  }
+
+  render(){
+    return (
+      <form>
+        <label>
+          用户名：
+          // 通过value设置input显示内容，通过onChange监听value的变化
+          <input type="text" name="name value={this.state.name} onChange={this.handleChange} />
+        </label>
+        <label>
+          密码：
+          <input type="password" name="password" value={this.state.password} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="登录" />
+      </form>
+    );
+  }
+}
+```
+
+用户名和密码两个表单元素的值是从组件的 state 中获取，当用户更改表单元素的值时，onChange 事件会被触发，
+
+对应的 handleChange 处理函数会把变化同步到组件的 state，新的 state 又会触发表单元素重新渲染，从而实现对表单元素状态的控制。
+
+#### 技巧
+
+这个例子还包含一个处理多个表单元素的技巧：通过为两个 input 元素分别指定 name 属性，
+
+使用同一个函数 handleChange 处理元素值的变化，在处理函数中根据元素的 name 属性区分事件的来源。
+
+这样的写法比为每一个 input 元素指定一个处理函数简洁得多。
+
+### textarea
+
+> **textarea 的使用方式和 input 几乎一致。**
+
+### 2、文本框
