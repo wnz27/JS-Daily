@@ -1647,4 +1647,65 @@ class LoginForm extends React.Component {
 
 > **textarea 的使用方式和 input 几乎一致。**
 
-### 2、文本框
+### 2、列表
+
+列表 select 元素是最复杂的表单元素，它可以用来创建一个下拉列表：
+
+```
+<select>
+  <option value="react">React</option>
+  <option value="redux">Redux</option>
+  <option selected value="mobx">MobX</option>
+</select>
+```
+
+通过指定 selected 属性可以定义哪一个选项（option）处于选中状态，所以上面的例子中，MobX 这一选项是列表的初始值，处于选中状态。
+
+在 React 中，对 select 的处理方式有所不同，他通过在 select 上定义的 value 属性来决定哪一个 option 元素处于选中状态。
+这样对 select 的控制只需要在 select 这一元素上修改即可，而不需要关注 option 元素，例如。
+
+```
+class ReactStackForm extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {value: 'mobx'};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  // 监听下拉列表的变化
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  // 表单提交的响应函数
+  handleSubmit(event) {
+    alert('You picked' + this.state.value);
+    event.prebentDefault();
+  }
+
+  render(){
+    return(
+      <form>
+        <label>
+          Pick one library:
+          // select的value属性定义当前哪个option元素处于选中状态
+          <select value={this.state.value} onChange={this.handleChange}>
+            <option value="react">React</option>
+            <option value="redux">Redux</option>
+            <option value="mobx">MobX</opotion>
+          </select>
+        </label>
+      </form>
+    );
+  }
+}
+```
+
+### 3、复选框和单选框
+
+复选框是类型为 checkbox 的 input 元素，单选框是类型为 radio 的 input 元素，它们的受控方式不同于类型为 text 的 input 元素。
+
+通常复选框和单选框的值是不变的，需要改变的是它们的 checked 状态，因此 React 控制的属性不再是 value 属性，而是 checked 属性。例如
+
+```
+
+```
