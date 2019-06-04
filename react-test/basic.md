@@ -1707,5 +1707,264 @@ class ReactStackForm extends React.Component {
 通常复选框和单选框的值是不变的，需要改变的是它们的 checked 状态，因此 React 控制的属性不再是 value 属性，而是 checked 属性。例如
 
 ```
+class ReactStackForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { react: false, redux: false, mobx: false };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  // 监听复选框变化，设置复选框的cehcked状态
+  handleChange(event) {
+    this.setState({[ecvent.target.name]: event.target.checked});
+  }
+  // 表单提交的响应函数
+  handleSubmit(event) {
+    event.preventDefault();
+  }
+  render(){
+    render(
+      <form>
+        // 设置三个复选框
+        <label>React
+        <input
+          type="checkbox"
+          name="react"
+          value="react"
+          checked={this.state.react}
+          onChange={this.handleChange}
+        />
+        </label>
+        <label>Redux
+        <input
+          type="checkbox"
+          name="redux"
+          value="redux"
+          checked={this.state.redux}
+          onChange={this.handleChange}
+        />
+        </label>
+        <label>MobX
+        <input
+          type="checkbox"
+          name="mobx"
+          value="mobx"
+          checked={this.state.mobx}
+          onChange={this.handleChange}
+        />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+```
+
+上面的例子中，input 的 value 是不变的，onChange 事件改变的是 input 的 checked 属性。单选框的用法和复选框相似。
+
+下面为 BBS 项目添加表单元素，让每一个帖子的标题支持编辑功能。修改 PostItem.js 如下：
 
 ```
+// PostItem.js
+import React, { Component } from "react";
+import "./PostItem.css";
+import like from "./images/like-default.png"; //图标作为模块被导入
+
+class PostItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // 帖子是否处于编辑状态
+      editing: false,
+      posts: props.post
+    };
+    this.handleVote = this.handleVote.bind(this);
+    this.handleEditPost = this.handleEditPost.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+  }
+  componentWillReceiveProps(nextProps) {
+    // 父组件更新post后，更新PostItem的state
+    if (this.props.post !== nextProps.post) {
+      this.setState({
+        post: nextProps.post
+      });
+    }
+  }
+  // 处理点赞事件
+  handleVote() {
+    this.props.onVote(this.props.post.id);
+  }
+  // 保存/编辑按钮点击后的逻辑
+  handleEditPost() {
+    const editing = this.state.editing;
+    // 当前处于编辑状态，调用父组件传递的onSave方法保存帖子
+    if (editing) {
+      this.props.onSave({
+        ...this.state.post,
+        date: this.getFormatDate()
+      });
+    }
+    this.setState({
+      editing: !editing
+    });
+  }
+  // 处理标题textarea值的变化
+  handleTitleChange(event) {
+    const newPost = { ...this.state.post, title: event.target.value };
+    this.setState({ post: newPost });
+  }
+
+  getFormatDate() {
+    // 省略
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1 + "";
+    month = month.length === 1 ? "0" + month : month;
+    let day = date.getDate() + "";
+    day = day.length === 1 ? "0" + day : day;
+    let hour = date.getHours() + "";
+    hour = hour.length === 1 ? "0" + hour : hour;
+    let minute = date.getMinutes() + "";
+    minute = minute.length === 1 ? "0" + minute : minute;
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+  }
+  render() {
+    const { post } = this.state;
+    return (
+      <li className="item">
+        <div className="title">
+          {this.state.editing ? (
+            <form>
+              <textarea value={post.title} onChange={this.handleTitleChange} />
+            </form>
+          ) : (
+            post.title
+          )}
+        </div>
+        <div>
+          创建人：<span>{post.author}</span>
+        </div>
+        <div>
+          创建时间：<span>{post.date}</span>
+        </div>
+        <div className="like">
+          <span>
+            <img alt="vote" src={like} onClick={this.handleVote} />
+          </span>
+          <span>{post.vote}</span>
+        </div>
+        <div>
+          <button onClick={this.handleEditPost}>
+            {this.state.editing ? "保存" : "编辑"}
+          </button>
+        </div>
+      </li>
+    );
+  }
+}
+
+export default PostItem;
+```
+
+当点击编辑状态的 button 时，帖子的标题会使用 textarea 展示，此时标题处以可编辑状态，当再次点击 button 时，会执行保存操作
+
+PostItem 通过 onSave 属性调用父组件 PostList 的 handleSave 方法，**将更新后的 Post（标题和时间）保存到 PostList 的 state 中**。PostList 中的修改如下：
+
+```
+// PostList.js
+import React, { Component } from "react";
+import PostItem from "./PostItem";
+import "./PostList.css";
+
+class PostList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: []
+    };
+    this.timer = null; // 定时器
+    this.handleVote = this.handleVote.bind(this); // ES 6的class中，必须手动绑定方法this的指向
+    this.handleSave = this.handleVote.bind(this);
+  }
+  componentDidMount() {
+    // 用setTimeout 模拟异步从服务器端获取数据
+    this.timer = setTimeout(() => {
+      this.setState({
+        posts: [
+          {
+            id: 1,
+            title: "大家一起来讨论React吧",
+            author: "张三",
+            date: "2017-09-01 10:00",
+            vote: 0
+          },
+          {
+            id: 2,
+            title: "前端框架，你最爱哪一个",
+            author: "李四",
+            date: "2018-08-03 09:00",
+            vote: 0
+          },
+          {
+            id: 3,
+            title: "Web App的时代已经到来",
+            author: "王五",
+            date: "2019-04-02 14:00",
+            vote: 0
+          }
+        ]
+      });
+    }, 1000);
+  }
+  componentWillUnmount() {
+    if (this.timer) {
+      clearTimeout(this.timer); // 清除定时器
+    }
+  }
+  //处理点赞逻辑
+  handleVote(id) {
+    // 根据帖子id进行过滤，找到待修改vote属性的帖子，返回新的posts对象
+    const posts = this.state.posts.map(item => {
+      const newItem = item.id === id ? { ...item, vote: ++item.vote } : item;
+      return newItem;
+    });
+    // 使用新的posts对象设置
+    this.setState({
+      posts: posts
+    });
+  }
+  // 保存帖子
+  handleSave(post) {
+    // 根据post的id，过滤出当前要更新的post
+    const posts = this.state.posts.map(item => {
+      const newItem = item.id === post.id ? post : item;
+      return newItem;
+    });
+    this.setState({
+      posts: posts
+    });
+  }
+  render() {
+    return (
+      <div className="container">
+        <h2>帖子列表：</h2>
+        <ul>
+          {this.state.posts.map(item => (
+            // 将id值付给key属性，作为唯一标识
+            <PostItem
+              key={item.id}
+              post={item}
+              onVote={this.handleVote}
+              onSave={this.handleSave}
+            />
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default PostList;
+```
+
+## 非受控组件

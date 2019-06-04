@@ -10,6 +10,7 @@ class PostList extends Component {
     };
     this.timer = null; // 定时器
     this.handleVote = this.handleVote.bind(this); // ES 6的class中，必须手动绑定方法this的指向
+    this.handleSave = this.handleVote.bind(this);
   }
   componentDidMount() {
     // 用setTimeout 模拟异步从服务器端获取数据
@@ -46,6 +47,7 @@ class PostList extends Component {
       clearTimeout(this.timer); // 清除定时器
     }
   }
+  //处理点赞逻辑
   handleVote(id) {
     // 根据帖子id进行过滤，找到待修改vote属性的帖子，返回新的posts对象
     const posts = this.state.posts.map(item => {
@@ -57,6 +59,17 @@ class PostList extends Component {
       posts: posts
     });
   }
+  // 保存帖子
+  handleSave(post) {
+    // 根据post的id，过滤出当前要更新的post
+    const posts = this.state.posts.map(item => {
+      const newItem = item.id === post.id ? post : item;
+      return newItem;
+    });
+    this.setState({
+      posts: posts
+    });
+  }
   render() {
     return (
       <div className="container">
@@ -64,7 +77,12 @@ class PostList extends Component {
         <ul>
           {this.state.posts.map(item => (
             // 将id值付给key属性，作为唯一标识
-            <PostItem key={item.id} post={item} onVote={this.handleVote} />
+            <PostItem
+              key={item.id}
+              post={item}
+              onVote={this.handleVote}
+              onSave={this.handleSave}
+            />
           ))}
         </ul>
       </div>
