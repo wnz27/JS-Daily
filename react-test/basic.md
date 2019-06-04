@@ -1776,7 +1776,7 @@ class PostItem extends Component {
     this.state = {
       // 帖子是否处于编辑状态
       editing: false,
-      posts: props.post
+      post: props.post
     };
     this.handleVote = this.handleVote.bind(this);
     this.handleEditPost = this.handleEditPost.bind(this);
@@ -1968,3 +1968,15 @@ export default PostList;
 ```
 
 ## 非受控组件
+
+使用受控组件虽然保证了表单元素的状态也由 React 统一管理，但需要为每个表单元素定义 onChange 事件的处理函数，然后把表单状态的更改同步到 React 组件的 state
+
+这是比较繁琐的，一种可替代的解决方案是使用非受控组件。
+
+非受控组件指表单元素的状态依然由表单元素自己管理，而不是交给 React 组件管理。
+
+使用非受控组件需要有一种方式可以获取到表单元素的值，React 中提供了一个特殊的属性 ref，用来引用 React 组件或 DOM 元素的实例，因此我们可以通过为表单元素定义 ref 属性获取元素的值。例如：
+
+```
+class
+```

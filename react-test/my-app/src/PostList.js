@@ -56,7 +56,7 @@ class PostList extends Component {
     });
     // 使用新的posts对象设置
     this.setState({
-      posts: posts
+      posts
     });
   }
   // 保存帖子
@@ -67,7 +67,7 @@ class PostList extends Component {
       return newItem;
     });
     this.setState({
-      posts: posts
+      posts
     });
   }
   render() {

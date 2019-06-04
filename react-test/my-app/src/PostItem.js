@@ -9,7 +9,7 @@ class PostItem extends Component {
     this.state = {
       // 帖子是否处于编辑状态
       editing: false,
-      posts: props.post
+      post: props.post
     };
     this.handleVote = this.handleVote.bind(this);
     this.handleEditPost = this.handleEditPost.bind(this);
