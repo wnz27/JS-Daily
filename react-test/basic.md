@@ -1978,5 +1978,73 @@ export default PostList;
 使用非受控组件需要有一种方式可以获取到表单元素的值，React 中提供了一个特殊的属性 ref，用来引用 React 组件或 DOM 元素的实例，因此我们可以通过为表单元素定义 ref 属性获取元素的值。例如：
 
 ```
-class
+class SimpleForm extends Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleSubmit(event) {
+      // 通过this.input获取到input元素的值
+      alert('The title you submitted was' + this.input.value);
+      event.preventDefault();
+  }
+  render(){
+    return (
+      <form>
+        <label>
+          title:
+          // this.input 指向当前input元素
+          <input type="text" ref={(input) => this.input = input} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
 ```
+
+ref 的值是一个函数，这个函数会接受当前元素作为参数，即例子中的 input 参数指向的是当前元素。
+
+在函数中我们把 input 赋值给了 this.input, 进而可以在组件的其他地方通过 this.input 获取这个元素。
+
+使用非受控组件时，我们常常需要为相应的表单元素设置默认值，但是无法通过表单元素的 value 属性，因为非受控组件中，React 无法控制表单元素的 value 属性
+
+这也就意味着一旦在非受控组件中定义了 value 属性的值，就很难保证后续表单元素的值的正确性。这种情况下，我们可以使用 defaultValue 属性指定默认值：
+
+```
+render(){
+  return(
+    <form>
+      <label>
+        title:
+        <input defaultValue="something" type="text" ref={(input) => this.input = input} />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+  );
+}
+```
+
+上面的例子，defaultValue 设置的默认值为 something，而后续值的更改由自己控制。类似地，select 元素和 textarea 元素也支持通过 defaultValue 设置默认值。
+
+`<input type="checkbox">`和`<input type="radio">`则支持通过 defaultChecked 属性设置的值。
+
+#### 个人理解
+
+有 defaultValue 以及 defaultChecked 都是让这个元素上有一个初值，那么后续变化的时候自动会同步到 this.input 上面
+
+如果没有这个 default，那么后续变化应该是会自动设置到 value 上，那么 React 又获取不到 value，所以就会出现无法保证后续值正确的问题。
+
+#### 小总结
+
+非受控组件看似简化了操作表单元素的过程，但这种方式破坏了 React 对组件状态管理的一致性，往往容易出现不容易排查的问题，因此非特殊情况下，不建议大家使用。
+
+# React 16 新特性
+
+React 16 是 Facebook 在 2017 年 9 月发布的 React 最新版本。
+
+React 16 基于代号为“Fiber”的新架构实现，几乎对 React 的底层代码进行了重写，但对外的 API 基本不变，所以开发者可以几乎无缝地迁移到 React 16
+
+此外，基于新的架构，React 16 实现了许多新特性。
+
+## render 新的返回类型
