@@ -22,7 +22,7 @@ export default class NavigationItem extends React.Component {
         <div>新品上市</div>
         <div>丶目DIY</div>
         <div>潮流时尚</div>
-        <Img src="/static/zhumulogo.png" alt="zhumulogo" />
+        <Img src="../static/zhumulogo.png" alt="zhumulogo" />
         <div>系列分类</div>
         <div>探索丶目</div>
         <div>登录</div>
