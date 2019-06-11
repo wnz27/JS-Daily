@@ -10,10 +10,16 @@ import SerialDetailItem from "./serialDetailItem";
 import PopularCombinationItem from "./popularCombinationItem";
 import InfoItem from "./infoItem";
 
+const Div = styled.div`
+  background: url("../static/bg.jpg");
+  background-size: 100%;
+  height: 3100px;
+`;
+
 export default class IndexPage extends React.Component {
   render() {
     return (
-      <div>
+      <Div>
         <Head>
           <title>Zhumu Jewerlry</title>
           <meta
@@ -31,7 +37,7 @@ export default class IndexPage extends React.Component {
           <a>here</a>
         </Link>{" "}
         to read more
-      </div>
+      </Div>
     );
   }
 }

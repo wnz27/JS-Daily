@@ -1,31 +1,38 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-const Nav = styled.nav`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-`;
-
-const Img = styled.img`
-  width: 205px;
-  height: 55px;
-`;
-
 export default class NavigationItem extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
+    const Nav = styled.nav`
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    `;
+
+    const Img = styled.img`
+      width: 205px;
+      height: 55px;
+    `;
+
+    const Button = styled.button`
+      font-size: 16px;
+      background-color: transparent;
+      border: 0;
+      outline: none;
+    `;
+
     return (
       <Nav>
-        <div>新品上市</div>
-        <div>丶目DIY</div>
-        <div>潮流时尚</div>
+        <Button>新品上市</Button>
+        <Button>丶目DIY</Button>
+        <Button>潮流时尚</Button>
         <Img src="../static/zhumulogo.png" alt="zhumulogo" />
-        <div>系列分类</div>
-        <div>探索丶目</div>
-        <div>登录</div>
+        <Button>系列分类</Button>
+        <Button>探索丶目</Button>
+        <Button>登录</Button>
       </Nav>
     );
   }
