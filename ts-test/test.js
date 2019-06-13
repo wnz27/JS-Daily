@@ -1,11 +1,18 @@
-"use strict";
 var message = "Hello World";
 console.log(message);
-let str = "12345";
+var str = "12345";
 console.log(str);
+var Student = /** @class */ (function () {
+    function Student(firstName, middleInitial, lastName) {
+        this.firstName = firstName;
+        this.middleInitial = middleInitial;
+        this.lastName = lastName;
+        this.fullName = firstName + " " + middleInitial + " " + lastName;
+    }
+    return Student;
+}());
 function greeter(person) {
     return "Hello " + person.firstName + " " + person.lastName;
 }
-let user = { firstName: "Jane", lastName: "User" };
+var user = new Student("Jane", "M.", "User");
 console.log(greeter(user));
-//# sourceMappingURL=test.js.map
