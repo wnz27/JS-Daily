@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 class Component extends React.Component{
     constructor(props){
         super(props);
-
     }
     render() {
         // setTimeout(() => {
