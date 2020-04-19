@@ -5,4 +5,4 @@
 - [next.js 学习](./next-test)
 - [其他的一些练习和测试](./other-test)
 - [eggjsquickstart](./egg-example)
-- [vue-test](./vue-example)
+- [vue-test](./vue-test)
