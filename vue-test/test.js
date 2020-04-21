@@ -1,56 +1,64 @@
+/*
+ * @Author: 27
+ * @LastEditors: 27
+ * @Date: 2020-04-21 23:10:19
+ * @LastEditTime: 2020-04-21 23:25:10
+ * @FilePath: /JS-Daily/vue-test/test.js
+ * @description: type some description
+ */
 var app = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
-    seen: true
-  }
-})
+    seen: true,
+  },
+});
 
 //app.seen = false
 
 var app4 = new Vue({
-  el: '#app-4',
+  el: "#app-4",
   data: {
     todos: [
-      { text: '学习 JavaScript' },
-      { text: '学习 Vue' },
-      { text: '整个牛项目' }
-    ]
-  }
-})
+      { text: "学习 JavaScript" },
+      { text: "学习 Vue" },
+      { text: "整个牛项目" },
+    ],
+  },
+});
 
-app4.todos.push({ text: '新项目' })
+app4.todos.push({ text: "新项目" });
 
 var app5 = new Vue({
-  el: '#app-5',
+  el: "#app-5",
   data: {
-    message: 'Hello Vue.js!'
+    message: "Hello Vue.js!",
   },
   methods: {
     reverseMessage: function () {
-      this.message = this.message.split('').reverse().join('')
-    }
-  }
-})
+      this.message = this.message.split("").reverse().join("");
+    },
+  },
+});
 
 var app6 = new Vue({
-  el: '#app-6',
+  el: "#app-6",
   data: {
-    message: 'Hello Vue!'
-  }
-})
+    message: "Hello Vue!",
+  },
+});
 
-Vue.component('todo-item', {
-  props: ['todo'],
-  template: '<li>{{ todo.text }}</li>'
-})
+Vue.component("todo-item", {
+  props: ["todo"],
+  template: "<li>{{ todo.text }}</li>",
+});
 
 var app7 = new Vue({
-  el: '#app-7',
+  el: "#app-7",
   data: {
     groceryList: [
-      { id: 0, text: '蔬菜' },
-      { id: 1, text: '奶酪' },
-      { id: 2, text: '随便其它什么人吃的东西' }
-    ]
-  }
-})
+      { id: 0, text: "蔬菜" },
+      { id: 1, text: "奶酪" },
+      { id: 2, text: "随便其它什么人吃的东西" },
+    ],
+  },
+});
