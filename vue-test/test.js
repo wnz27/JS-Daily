@@ -1,11 +1,3 @@
-/*
- * @Author: 27
- * @LastEditors: 27
- * @Date: 2020-04-21 23:10:19
- * @LastEditTime: 2020-04-21 23:25:10
- * @FilePath: /JS-Daily/vue-test/test.js
- * @description: type some description
- */
 var app = new Vue({
   el: "#app",
   data: {
