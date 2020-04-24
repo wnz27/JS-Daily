@@ -48,9 +48,42 @@ var app7 = new Vue({
   el: "#app-7",
   data: {
     groceryList: [
-      { id: 0, text: "蔬菜" },
-      { id: 1, text: "奶酪" },
-      { id: 2, text: "随便其它什么人吃的东西" },
+      { id: 0, text: '蔬菜' },
+      { id: 1, text: '奶酪' },
+      { id: 2, text: '随便其它什么人吃的东西' }
+    ]
+  }
+})
+
+var app8 = new Vue({
+  el: '#app-8',
+  data: {
+    // a: 'true',
+    // b: 'false',
+    toggle: 'true'
+  }
+})
+
+var app9 = new Vue({
+  el: '#app-9',
+  data: {
+    radio:''
+  }
+})
+
+var app10 = new Vue({
+  el: '#app-10',
+  data: {
+    selected: '1',
+    options: [
+      {text: '跑步', value: '1'},
+      {text: '瑜伽', value: '2'},
+      {text: '读书', value: '3'}
     ],
-  },
-});
+    methods:{
+      switchSelect(optionValue){
+        this.selected = optionValue
+      } 
+    }
+  }
+})

@@ -45,6 +45,25 @@
       </ol>
     </div>
 
+    <div id="app-8">
+      <input type="checkbox" v-model="toggle" v-bind:true-value="true" v-bind:false-value="false">
+      <span>{{ toggle }}</span>
+    </div>
+
+    <div id="app-9">
+      <input type="radio" v-model="radio" v-bind:value="true">
+      <span>{{ radio }}</span>
+    </div>
+
+    <div id="app-10">
+      <select>
+        <option v-for="option in options" v-bind:value="option.value"> <!--@switchSelect="switchSelect(option.value)"-->
+          {{  option.text }}
+        </option> 
+      </select>
+      <span>选择：{{ selected }}</span>
+    </div>
+
     <script src="test.js"></script>
 </body>
 </html>
