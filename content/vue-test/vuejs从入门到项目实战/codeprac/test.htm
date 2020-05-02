@@ -12,9 +12,24 @@
   <div id="app">
     <p>！！！{{ name }}💪！！！</p>
   </div>
+  <div id="compute">
+    输入内容：<input type="text" v-model="message"><br />
+    反转内容：{{ reversedMessage }}
+  </div>
 </body>
 <script>
   // 创建实例
+  var compute = new Vue({
+    el: '#compute',
+    data: {
+      message: ''
+    },
+    computed: {
+      reversedMessage: function () {
+        return this.message.split('').reverse().join('')
+      }
+    }
+  })
   var app = new Vue({
     el: '#app',
     data: {

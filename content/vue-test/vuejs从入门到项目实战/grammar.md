@@ -182,3 +182,65 @@ v-on 指令用于监听 DOM 事件，例如下面代码：
 ```
 
 这俩字符在所有支持 Vue 的浏览器都可以被正确的解析，而且不会出现在最终的渲染标记里。
+
+#### 计算属性
+计算属性在computed选项中定义。计算属性就是当其依赖属性的值发生变化时，这个属性的值会自动更新，
+与之相关的DOM也会同步更新。这里的依赖属性值是data中定义的属性。
+
+下面是一个反转字符串的示例，定义了一个reversedMessage计算属性，在input输入框中输入字符串时，
+绑定的message属性值发生变化，触发reversedMessage计算属性，执行对应的函数，使字符串反转。
+```
+<div id="compute">
+    输入内容：<input type="text" v-model="message"><br />
+    反转内容：{{ reversedMessage }}
+</div>
+var compute = new Vue({
+    el: '#compute',
+    data: {
+      message: ''
+    },
+    computed: {
+      reversedMessage: function () {
+        return this.message.split('').reverse().join('')
+      }
+    }
+})
+```
+计算属性的写法和方法相似，完全可以在methods中定义一个方法来实现相同的功能。如
+```
+<div id="compute">
+    输入内容：<input type="text" v-model="message"><br />
+    反转内容：{{ reversedMessage() }}  //注意这里
+</div>
+var compute = new Vue({
+    el: '#compute',
+    data: {
+      message: ''
+    },
+    methods: {
+      reversedMessage: function () {
+        return this.message.split('').reverse().join('')
+      }
+    }
+})
+```
+计算属性本质就是一个方法，只不过在使用计算属性的时候，把计算属性的名称直接作为属性来使用，
+并不会把计算属性作为一个方法去调用。
+
+###### 为什么还要用计算属性而不是去定义一个方法呢？？？
+计算属性时基于它们的依赖进行缓存的，即只有在相关依赖发生改变时它们才会重新求值。
+
+例如在上面的例子中，只要message没有发生变化，多次访问reversedMessage计算属性会立即返回之前的计算结果，
+而不必再次执行函数。
+反之，如果使用方法的形式实现，当使用到reversedMessage方法时，无论message属性是否发生改变，
+方法都会重新执行一次，无形之中增加了系统开销。
+
+在某些情况下，计算属性和方法可以实现相同的功能，但有一个重要的不同点：
+**在调用methods中的一个方法时，所有方法都会被调用。**
+
+使用计算属性则不同，计算属性相当于优化了的方法，使用时只会使用对应的计算属性。
+
+> Attention：计算属性的调用不能使用括号，调用方法要加上括号。
+
+计算属性相比较于方法更加优化，但并不是什么时候都适合使用计算属性，在触发事件时还是使用对应的方法。
+计算属性一般在数据量比较大、比较耗时的情况下使用。
