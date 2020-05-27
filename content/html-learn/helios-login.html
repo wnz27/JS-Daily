@@ -42,7 +42,7 @@
             font-size: 1.5em;   
             margin: 0.67em 0;
         }    
-        input{   
+        input {   
             width: 278px;   
             height: 18px;   
             margin-bottom: 10px;   
@@ -58,7 +58,7 @@
             border-radius: 4px;   
             background-color: #2D2D3F;   
         }   
-        .but{   
+        .but {   
             width: 300px;   
             min-height: 20px;   
             display: block;   
@@ -71,15 +71,28 @@
             border-radius: 5px;   
             margin: 0;   
         }  
+        .authcode {
+            width: 300px;   
+            min-height: 20px;   
+            display: inline;   
+            background-color: #126CC1;   
+            border: 1px solid #3762bc;   
+            color: #fff;   
+            padding: 9px 14px;   
+            font-size: 15px;   
+            line-height: normal;   
+            border-radius: 5px;   
+            margin-bottom: 10px;
+        }
     </style>  
 </head>  
 <body>  
     <div id="login">  
         <h1>Login</h1>
-        <span>{error Message}</span>
+        <span>{error}</span>
         <form method="post">
             <input type="text" required="required" placeholder="手机号" name="u"></input>  
-            <input type="password" required="required" placeholder="密码" name="p"></input>  
+            <input type="password" placeholder="验证码" name="p"></input>  <button class="authcode" type="submit">发送验证码</button>
             <button class="but" type="submit">登录</button>  
         </form>  
     </div>  
